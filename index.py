@@ -22,20 +22,19 @@ def on_submit():
 	# data validation
     if stop_id.isdigit() == False:
 		# put error pop up here and return
-	    print (False)
-    if minutes is None:
-    	# if not given, default to 60 mins
-    	minutes = 60
+        print (False)
+        if minutes is None:
+            # if not given, default to 60 mins
+            minutes = 60
     elif minutes.isdigit() == False:
     	# put error pop up here and return
-
+        print(False)
 	# create API URL
-	url = base_url + appID + '&locIDs=' + stop_id + '&minutes=' + minutes
-
+    url = base_url+appID+'&locIDs='+stop_id + '&minutes='+minutes
     # make get request
-	contents = urllib.request.urlopen(url).read()
-	json_obj = json.loads(contents)
-	print (json_obj)
+    contents = urllib.request.urlopen(url).read()
+    json_obj = json.loads(contents)
+    print (json_obj)
 
     try: 
         int(stop_id)
