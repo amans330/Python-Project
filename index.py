@@ -15,6 +15,17 @@ def open_station_browser():
 	'''
 	webbrowser.open_new(find_stations_url)
 
+def display_data(json_obj):
+	row = 0
+	for i in json_obj['resultSet']['arrival']:
+		e = Entry(m)
+		e.grid(row=row, column=1, sticky=NSEW)
+		e.insert(END, i['fullSign'])
+		e = Entry(m)
+		e.grid(row=row, column=2, sticky=NSEW)
+		e.insert(END, i['estimated'])
+		++row
+
 def on_submit():
     stop_id = stopId.get()
     minutes = mins.get()
@@ -22,7 +33,7 @@ def on_submit():
 	# data validation
     if stop_id.isdigit() == False:
 		# put error pop up here and return
-        print (False)
+        
         if minutes is None:
             # if not given, default to 60 mins
             minutes = 60
@@ -30,15 +41,14 @@ def on_submit():
     	# put error pop up here and return
         print(False)
 	# create API URL
-    url = base_url+appID+'&locIDs='+stop_id + '&minutes='+minutes
+    url = base_url+appID+'&locIDs='+ stop_id + '&minutes='+minutes
     # make get request
     contents = urllib.request.urlopen(url).read()
     json_obj = json.loads(contents)
-    print (json_obj)
+    display_data (json_obj)
 
     try: 
         int(stop_id)
-        print (True)
     except ValueError:
         print (False)
 
