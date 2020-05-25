@@ -19,16 +19,21 @@ def open_station_browser():
 
 def display_data(json_obj):
     # row = 0
-    layout = 'Stop Names \t\t\t Scheduled Time \n'
+    layout = ''
     for i in json_obj['resultSet']['arrival']:
         stime = datetime.fromtimestamp(int(str(i['scheduled'])) / 1000).strftime('%H:%M:%S')
-        layout += str(i['fullSign']) + '\t\t\t'
-        layout += str(stime) + '\n'
+        layout += str(i['fullSign']) + '\n'
+        layout += '\t Scheduled Time: ' + str(stime) + '\n'
+        if(i['estimated'] in json_obj):
+            time = int(i['estimated']) - int(i['scheduled'])
+            layout += '\t Status: '  + str(time) + '\n'
+        else:
+            layout += '\t Status: On Time \n'
     
     gui = Tk(className = ' Trimet Results')
     gui.geometry("500x500")
     gui.resizable(True,True)
-    w= Message(gui,text=layout)
+    w = Message(gui,text=layout)
     w.pack()
     
 def on_submit():
