@@ -21,17 +21,22 @@ def display_data(json_obj):
     # row = 0
     layout = ''
     for i in json_obj['resultSet']['arrival']:
+        print(json.dumps(json_obj['resultSet']['arrival'],indent=4))
         stime = datetime.fromtimestamp(int(str(i['scheduled'])) / 1000).strftime('%H:%M:%S')
         layout += str(i['fullSign']) + '\n'
+        # layout += '\t Trip Id: ' + str(i['tripID']) + '\n'
         layout += '\t Scheduled Time: ' + str(stime) + '\n'
-        if i['estimated'] in json_obj:
+        if i['status'] in json_obj == 'estimated':
             time = int(i['estimated']) - int(i['scheduled'])
-            layout += '\t Status: '  + str(time) + '\n'
+            if time == 0:
+                layout += '\t Status: On Time \n'
+            else:
+                layout += '\t Status: '  + str(time) + ' behind scheduled \n'
         else:
             layout += '\t Status: On Time \n'
     
     gui = Tk(className = ' Trimet Results')
-    gui.geometry("500x500")
+    gui.geometry("450x900")
     gui.resizable(True,True)
     w = Message(gui,text=layout)
     w.pack()
