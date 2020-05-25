@@ -24,7 +24,7 @@ def display_data(json_obj):
         stime = datetime.fromtimestamp(int(str(i['scheduled'])) / 1000).strftime('%H:%M:%S')
         layout += str(i['fullSign']) + '\n'
         layout += '\t Scheduled Time: ' + str(stime) + '\n'
-        if(i['estimated'] in json_obj):
+        if i['estimated'] in json_obj:
             time = int(i['estimated']) - int(i['scheduled'])
             layout += '\t Status: '  + str(time) + '\n'
         else:
