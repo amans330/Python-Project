@@ -4,6 +4,7 @@ import webbrowser
 import urllib.request
 import json
 from tkinter import messagebox
+from datetime import datetime
 
 base_url = 'https://developer.trimet.org/ws/v2/arrivals?'
 find_stations_url = 'https://trimet.org/ride/stop_select_form.html'
@@ -20,19 +21,12 @@ def display_data(json_obj):
     # row = 0
     layout = 'Stop Names \t\t\t Scheduled Time \n'
     for i in json_obj['resultSet']['arrival']:
-        print(type(i['fullSign']))
+        stime = datetime.fromtimestamp(int(str(i['scheduled'])) / 1000).strftime('%H:%M:%S')
         layout += str(i['fullSign']) + '\t\t\t'
-        layout += str(i['scheduled']) + '\n'
-        # e = Entry(m)
-        # e.grid(row=row, column=1, sticky=NSEW)
-        # e.insert(END, i['fullSign'])
-        # e = Entry(m)
-        # e.grid(row=row, column=2, sticky=NSEW)
-        # e.insert(END, i['estimated'])
-        # row = row+1
-    print(layout)
+        layout += str(stime) + '\n'
+    
     gui = Tk(className = ' Trimet Results')
-    gui.geometry("400x400")
+    gui.geometry("500x500")
     gui.resizable(True,True)
     w= Message(gui,text=layout)
     w.pack()
@@ -44,26 +38,28 @@ def on_submit():
 	# data validation
     if stop_id.isdigit() == False:
 		# put error pop up here and return
-        messagebox.showerror("Error", "Stop ID should be a digit!")
+        messagebox.showerror("Error", "Stop ID should be in digits!")
+        return
     if minutes == '':
-        # if not given, default to 60 mins
-        minutes = int(60)
+        # if not given, default to 20 mins
+        minutes = int(20)
     elif minutes.isdigit() == False:
     	# put error pop up here and return
-        messagebox.showerror("Error", "Minutes should in digits!")
-        print(False)
+        messagebox.showerror("Error", "Minutes should be in digits!")
+        return
+    if int(minutes) > 60:
+    	# put error pop up here and return
+        messagebox.showerror("Error", "Maximum duration is 60 minutes!")
+        return
+
 	# create API URL
     url = base_url + appID + '&locIDs='+ stop_id + '&minutes=' + str(minutes)
+    print(url)
     # make get request
     contents = urllib.request.urlopen(url).read()
     json_obj = json.loads(contents)
     #print(json.dumps(json_obj['resultSet']['arrival'],indent=4))
     display_data (json_obj)
-
-    try:
-        int(stop_id)
-    except ValueError:
-        print (False)
 
 # create master view, named as m
 m = Tk(screenName=None,  baseName=None,  className='Trimet',  useTk=1)
@@ -94,8 +90,9 @@ mins.grid(row = 2,column = 1)
 
 #Creating Submit button
 submitButton = Button(m ,text="Submit", command = on_submit).grid(row=4,column=1,sticky='NS')
-# submitButton.bind()
-#Creating Quit button
+
+#Create Quit button
 button = Button(m, text='Quit', width=15, command=m.destroy).grid(row = 5,column = 1,sticky='NS')
+
 m.mainloop()
 
