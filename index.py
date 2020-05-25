@@ -18,10 +18,10 @@ def open_station_browser():
 
 def display_data(json_obj):
     # row = 0
-    layout = ''
+    layout = 'Stop Names \t\t\t Scheduled Time \n'
     for i in json_obj['resultSet']['arrival']:
         print(type(i['fullSign']))
-        layout += str(i['fullSign']) + '\t'
+        layout += str(i['fullSign']) + '\t\t\t'
         layout += str(i['scheduled']) + '\n'
         # e = Entry(m)
         # e.grid(row=row, column=1, sticky=NSEW)
@@ -31,7 +31,11 @@ def display_data(json_obj):
         # e.insert(END, i['estimated'])
         # row = row+1
     print(layout)
-    messagebox.showinfo('Trimet Results', layout)
+    gui = Tk(className = ' Trimet Results')
+    gui.geometry("400x400")
+    gui.resizable(True,True)
+    w= Message(gui,text=layout)
+    w.pack()
     
 def on_submit():
     stop_id = stopId.get()
@@ -42,7 +46,7 @@ def on_submit():
 		# put error pop up here and return
         messagebox.showerror("Error", "Stop ID should be a digit!")
     if minutes == '':
-            # if not given, default to 60 mins
+        # if not given, default to 60 mins
         minutes = int(60)
     elif minutes.isdigit() == False:
     	# put error pop up here and return
