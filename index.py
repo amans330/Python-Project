@@ -87,8 +87,8 @@ stationmenu.add_command(label='stationmenu', command=open_station_browser)
 
 #create label for Stop Id, Start time and end time
 label1 = Label(m, text="Stop Id").grid(row = 1,column = 0)
-label2 = Label(m, text="From").grid(row = 2, column = 0)
-label3 = Label(m ,text = "Until").grid(row = 3,column = 0, sticky='NS')
+label2 = Label(m, text="Time").grid(row = 2, column = 0)
+# label3 = Label(m ,text = "Until").grid(row = 3,column = 0, sticky='NS')
 
 # create text fields, in grid format
 stopId = Entry(m)
