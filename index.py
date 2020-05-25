@@ -1,8 +1,8 @@
 from tkinter import *
-from tkinter import ttk
 import webbrowser
 import urllib.request
 import json
+import os
 from tkinter import messagebox
 from datetime import datetime
 
@@ -21,7 +21,7 @@ def display_data(json_obj):
     # row = 0
     layout = ''
     for i in json_obj['resultSet']['arrival']:
-        print(json.dumps(json_obj['resultSet']['arrival'],indent=4))
+        # print(json.dumps(json_obj['resultSet']['arrival'],indent=4))
         stime = datetime.fromtimestamp(int(str(i['scheduled'])) / 1000).strftime('%H:%M:%S')
         layout += str(i['fullSign']) + '\n'
         # layout += '\t Trip Id: ' + str(i['tripID']) + '\n'
@@ -59,12 +59,11 @@ def on_submit():
         return
     if int(minutes) > 60:
     	# put error pop up here and return
-        messagebox.showerror("Error", "Maximum duration is 60 minutes!")
+        messagebox.showerror("Error", "Maximum duration is 60 minutes. Default is 20 minutes!")
         return
 
 	# create API URL
     url = base_url + appID + '&locIDs='+ stop_id + '&minutes=' + str(minutes)
-    print(url)
     # make get request
     contents = urllib.request.urlopen(url).read()
     json_obj = json.loads(contents)
@@ -74,6 +73,13 @@ def on_submit():
 # create master view, named as m
 m = Tk(screenName=None,  baseName=None,  className='Trimet',  useTk=1)
 m.title('Welcome to The Trimet Arrivals App')
+m.geometry('300x300')
+m.config(bg='blue')
+
+
+background_image = PhotoImage("trimet.png")
+background_label = Label(m, image=background_image)
+background_label.place(x=0, y=0, relwidth=1, relheight=1)
 
 # create main menu toolbar
 menu = Menu(m)
@@ -86,9 +92,8 @@ menu.add_cascade(label='Find Station ID', menu=stationmenu)
 stationmenu.add_command(label='stationmenu', command=open_station_browser)
 
 #create label for Stop Id, Start time and end time
-label1 = Label(m, text="Stop Id").grid(row = 1,column = 0)
-label2 = Label(m, text="Time").grid(row = 2, column = 0)
-# label3 = Label(m ,text = "Until").grid(row = 3,column = 0, sticky='NS')
+label1 = Label(m, text="Stop Id", width=5, height=3).grid(row = 1,column = 0)
+label2 = Label(m, text="Duration", width=8, height=2).grid(row = 2, column = 0)
 
 # create text fields, in grid format
 stopId = Entry(m)
@@ -99,10 +104,10 @@ mins.grid(row = 2,column = 1)
 
 
 #Creating Submit button
-submitButton = Button(m ,text="Submit", command = on_submit).grid(row=4,column=1,sticky='NS')
+submitButton = Button(m ,text="Submit", width=15, command = on_submit).grid(row=4,column=1)
 
 #Create Quit button
-button = Button(m, text='Quit', width=15, command=m.destroy).grid(row = 5,column = 1,sticky='NS')
+button = Button(m, text='Quit', width=15, command=m.destroy).grid(row = 6,column = 1)
 
 m.mainloop()
 
