@@ -3,6 +3,7 @@ from tkinter import ttk
 import webbrowser
 import urllib.request
 import json
+from tkinter import messagebox
 
 base_url = 'https://developer.trimet.org/ws/v2/arrivals?'
 find_stations_url = 'https://trimet.org/ride/stop_select_form.html'
@@ -16,38 +17,46 @@ def open_station_browser():
 	webbrowser.open_new(find_stations_url)
 
 def display_data(json_obj):
-	row = 0
-	for i in json_obj['resultSet']['arrival']:
-		e = Entry(m)
-		e.grid(row=row, column=1, sticky=NSEW)
-		e.insert(END, i['fullSign'])
-		e = Entry(m)
-		e.grid(row=row, column=2, sticky=NSEW)
-		e.insert(END, i['estimated'])
-		++row
-
+    # row = 0
+    layout = ''
+    for i in json_obj['resultSet']['arrival']:
+        print(type(i['fullSign']))
+        layout += str(i['fullSign']) + '\t'
+        layout += str(i['scheduled']) + '\n'
+        # e = Entry(m)
+        # e.grid(row=row, column=1, sticky=NSEW)
+        # e.insert(END, i['fullSign'])
+        # e = Entry(m)
+        # e.grid(row=row, column=2, sticky=NSEW)
+        # e.insert(END, i['estimated'])
+        # row = row+1
+    print(layout)
+    messagebox.showinfo('Trimet Results', layout)
+    
 def on_submit():
     stop_id = stopId.get()
     minutes = mins.get()
-
+    
 	# data validation
     if stop_id.isdigit() == False:
 		# put error pop up here and return
-        
-        if minutes is None:
+        messagebox.showerror("Error", "Stop ID should be a digit!")
+    if minutes == '':
             # if not given, default to 60 mins
-            minutes = 60
+        minutes = int(60)
     elif minutes.isdigit() == False:
     	# put error pop up here and return
+        messagebox.showerror("Error", "Minutes should in digits!")
         print(False)
 	# create API URL
-    url = base_url+appID+'&locIDs='+ stop_id + '&minutes='+minutes
+    url = base_url + appID + '&locIDs='+ stop_id + '&minutes=' + str(minutes)
     # make get request
     contents = urllib.request.urlopen(url).read()
     json_obj = json.loads(contents)
+    #print(json.dumps(json_obj['resultSet']['arrival'],indent=4))
     display_data (json_obj)
 
-    try: 
+    try:
         int(stop_id)
     except ValueError:
         print (False)
