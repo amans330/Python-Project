@@ -31,7 +31,7 @@ def open_readme():
 	return
 
 def display_data(json_obj):
-	''' this method displays the arrival records in a new window'''
+    ''' this method displays the arrival records in a new window'''
 
 	# if non-existant stop id used, show pop up and return
     if 'error' in json_obj['resultSet']:
@@ -63,7 +63,7 @@ def display_data(json_obj):
     w.pack()
     
 def on_submit():
-	''' This method makes the Http Get call to the Trimet API and gets the data'''
+    ''' This method makes the Http Get call to the Trimet API and gets the data'''
     stop_id = stopId.get()
     minutes = mins.get()
     
