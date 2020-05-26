@@ -2,7 +2,6 @@ from tkinter import *
 import webbrowser
 import urllib.request
 import json
-import os
 from tkinter import messagebox
 from datetime import datetime
 
@@ -17,11 +16,22 @@ def open_station_browser():
 	'''
 	webbrowser.open_new(find_stations_url)
 
+def open_readme():
+	messagebox.showinfo("How to Use this App", 'Welcome to the Trimet Arrivals Information App!'+
+		'\n\nThis application shows you all upcoming arrivals for any stop for the duration provided by '
+		'the user in minutes. \n\nIf you need help finding your stop id, click on help and visit the trimet '
+		'website. Enter the name of your stop to know its stop id.\n\nThe stop id takes only numbers and '
+		'is mandatory.\n\nThe duration is in minutes and can be left blank. In that case the default value '
+		'would be 20 minutes. The max duration trimet supports is 60 minutes. \n\nThe App also shows you '
+		'updated arrival status for each arrival and will let you know how much is it late.\n\n'+
+		'The results window will also show the name of the station so you can be sure that you are searching '
+		'for the right station.\n\nThis App also supports streetcar arrivals.\n\n'+
+		'Press Ok to continue using the App!')
+	return
+
 def display_data(json_obj):
-    # row = 0
     layout = ''
     for i in json_obj['resultSet']['arrival']:
-        # print(json.dumps(json_obj['resultSet']['arrival'],indent=4))
         stime = datetime.fromtimestamp(int(str(i['scheduled'])) / 1000).strftime('%H:%M:%S')
         layout += str(i['fullSign']) + '\n'
         # layout += '\t Trip Id: ' + str(i['tripID']) + '\n'
@@ -35,7 +45,11 @@ def display_data(json_obj):
         else:
             layout += '\t Status: On Time \n'
     
-    gui = Tk(className = ' Trimet Results')
+    location = ''
+    for i in json_obj['resultSet']['location']:
+    	location = i['desc']
+    	break
+    gui = Tk(className = location)
     gui.geometry("450x900")
     gui.resizable(True,True)
     w = Message(gui,text=layout)
@@ -86,10 +100,11 @@ menu = Menu(m)
 m.config(menu=menu)
 
 #create find station menu 
-stationmenu = Menu(menu)
+helpmenu = Menu(menu)
 #add it to main menu
-menu.add_cascade(label='Find Station ID', menu=stationmenu)
-stationmenu.add_command(label='stationmenu', command=open_station_browser)
+menu.add_cascade(label='Help', menu=helpmenu)
+helpmenu.add_command(label='Visit Trimet Website', command=open_station_browser)
+helpmenu.add_command(label='Tutorial', command=open_readme)
 
 #create label for Stop Id, Start time and end time
 label1 = Label(m, text="Stop Id", width=5, height=3).grid(row = 1,column = 0)
