@@ -30,11 +30,15 @@ def open_readme():
 	return
 
 def display_data(json_obj):
+	# if non-existant stop id used, show pop up and return
+    if 'error' in json_obj['resultSet']:
+        messagebox.showinfo("", 'No records found for this stop.')
+        return
+
     layout = ''
     for i in json_obj['resultSet']['arrival']:
         stime = datetime.fromtimestamp(int(str(i['scheduled'])) / 1000).strftime('%H:%M:%S')
         layout += str(i['fullSign']) + '\n'
-        # layout += '\t Trip Id: ' + str(i['tripID']) + '\n'
         layout += '\t Scheduled Time: ' + str(stime) + '\n'
         if i['status'] in json_obj == 'estimated':
             time = int(i['estimated']) - int(i['scheduled'])
@@ -80,8 +84,8 @@ def on_submit():
     url = base_url + appID + '&locIDs='+ stop_id + '&minutes=' + str(minutes)
     # make get request
     contents = urllib.request.urlopen(url).read()
+    
     json_obj = json.loads(contents)
-    #print(json.dumps(json_obj['resultSet']['arrival'],indent=4))
     display_data (json_obj)
 
 # create master view, named as m
