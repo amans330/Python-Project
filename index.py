@@ -17,6 +17,7 @@ def open_station_browser():
 	webbrowser.open_new(find_stations_url)
 
 def open_readme():
+	'''Opens the read me window for this App'''
 	messagebox.showinfo("How to Use this App", 'Welcome to the Trimet Arrivals Information App!'+
 		'\n\nThis application shows you all upcoming arrivals for any stop for the duration provided by '
 		'the user in minutes. \n\nIf you need help finding your stop id, click on help and visit the trimet '
@@ -30,6 +31,8 @@ def open_readme():
 	return
 
 def display_data(json_obj):
+	''' this method displays the arrival records in a new window'''
+
 	# if non-existant stop id used, show pop up and return
     if 'error' in json_obj['resultSet']:
         messagebox.showinfo("", 'No records found for this stop.')
@@ -60,6 +63,7 @@ def display_data(json_obj):
     w.pack()
     
 def on_submit():
+	''' This method makes the Http Get call to the Trimet API and gets the data'''
     stop_id = stopId.get()
     minutes = mins.get()
     
